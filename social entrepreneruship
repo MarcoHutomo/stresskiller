@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stress Profile Quest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body class="bg-blue-50 font-sans">
+  <div class="container mx-auto p-4 max-w-lg">
+    <!-- Start Screen -->
+    <div id="start-screen" class="text-center">
+      <h1 class="text-3xl font-bold text-blue-700 mb-4">Stress Profile Quest</h1>
+      <p class="text-lg text-gray-600 mb-6">Take this 5–10 minute test to discover your Stress Profile Type and get personalized stress-relief recommendations.</p>
+      <button id="start-btn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Start Test</button>
+    </div>
+
+    <!-- Question Screen -->
+    <div id="question-screen" class="hidden">
+      <div class="w-full bg-blue-100 rounded-full h-4 mb-4">
+        <div id="progress-bar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
+      </div>
+      <h2 id="question-text" class="text-2xl font-semibold text-blue-800 mb-4"></h2>
+      <div id="options" class="space-y-4"></div>
+      <p id="progress-text" class="text-sm text-gray-600 mt-4"></p>
+    </div>
+
+    <!-- Lifestyle Survey Screen -->
+    <div id="survey-screen" class="hidden">
+      <h2 class="text-2xl font-semibold text-blue-800 mb-4">Lifestyle & Habits</h2>
+      <p class="text-lg text-gray-600 mb-4">Help us tailor recommendations by answering these quick questions.</p>
+      <form id="lifestyle-form" class="space-y-4">
+        <div>
+          <label class="block text-gray-700">1. How many hours do you typically work per day?</label>
+          <select name="work-hours" class="w-full p-2 border rounded">
+            <option value="8-10">8–10 hours</option>
+            <option value="10-12">10–12 hours</option>
+            <option value="12+">12+ hours</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-gray-700">2. What is your primary mode of commuting?</label>
+          <select name="commute" class="w-full p-2 border rounded">
+            <option value="subway">Subway</option>
+            <option value="bus">Bus</option>
+            <option value="car">Car</option>
+            <option value="walking">Walking</option>
+            <option value="cycling">Cycling</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-gray-700">3. How often do you engage in physical activities?</label>
+          <select name="exercise" class="w-full p-2 border rounded">
+            <option value="daily">Daily</option>
+            <option value="2-3-times-week">2–3 times/week</option>
+            <option value="rarely">Rarely</option>
+            <option value="never">Never</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-gray-700">4. What hobbies or leisure activities do you enjoy?</label>
+          <input type="text" name="hobbies" class="w-full p-2 border rounded" placeholder="e.g., Cooking, Art, Reading, Gaming, None">
+        </div>
+        <div>
+          <label class="block text-gray-700">5. How much free time do you have on weekdays vs. weekends?</label>
+          <input type="text" name="free-time" class="w-full p-2 border rounded" placeholder="e.g., Weekdays: <1 hour, Weekends: 3–5 hours">
+        </div>
+        <div>
+          <label class="block text-gray-700">6. Where in Seoul (or nearby) do you live or work?</label>
+          <input type="text" name="location" class="w-full p-2 border rounded" placeholder="e.g., Gangnam, Hongdae, Yeouido">
+        </div>
+        <div>
+          <label class="block text-gray-700">7. What times are you typically available for offline events?</label>
+          <input type="text" name="availability" class="w-full p-2 border rounded" placeholder="e.g., Weekday evenings, Saturday mornings">
+        </div>
+        <div>
+          <label class="block text-gray-700">8. Do you prefer online activities, in-person events, or a mix?</label>
+          <select name="preference" class="w-full p-2 border rounded">
+            <option value="online">Online only</option>
+            <option value="in-person">In-person only</option>
+            <option value="both">Both</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-gray-700">9. Are there any barriers to participating in stress-relief activities?</label>
+          <input type="text" name="barriers" class="w-full p-2 border rounded" placeholder="e.g., Cost, Time, Location, Stigma">
+        </div>
+        <button type="submit" id="survey-submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Submit</button>
+      </form>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen" class="hidden text-center">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4">Your Stress Profile</h2>
+      <h3 id="profile-type" class="text-xl font-semibold text-blue-800 mb-4"></h3>
+      <p id="profile-description" class="text-lg text-gray-600 mb-6"></p>
+      <h4 class="text-lg font-semibold text-blue-800 mb-2">Personalized Recommendations</h4>
+      <ul id="recommendations" class="list-disc list-inside text-left text-gray-600 mb-6"></ul>
+      <button id="restart-btn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Take Test Again</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "Your boss demands overtime on a Friday night, clashing with your plans. What’s your instinct?",
+        options: [
+          { text: "Plan a quick jog to clear my head.", score: { coping: "action", mindset: "proactive" } },
+          { text: "Sketch my frustrations to process them.", score: { coping: "creativity", mindset: "introspective" } },
+          { text: "Try a breathing exercise to stay calm.", score: { coping: "calm", mindset: "proactive" } },
+          { text: "Take a walk in a local park to unwind.", score: { coping: "nature", mindset: "introspective" } }
+        ]
+      },
+      {
+        text: "Your colleague takes credit for your work. How do you react?",
+        options: [
+          { text: "Hit the gym to blow off steam.", score: { coping: "action", mindset: "proactive" } },
+          { text: "Write a story to vent my feelings.", score: { coping: "creativity", mindset: "introspective" } },
+          { text: "Listen to soothing music to relax.", score: { coping: "calm", mindset: "proactive" } },
+          { text: "Stroll by a river to find peace.", score: { coping: "nature", mindset: "introspective" } }
+        ]
+      },
+      {
+        text: "A tight deadline looms, and your team is behind. How do you cope?",
+        options: [
+          { text: "Do desk stretches to stay focused.", score: { coping: "action", mindset: "proactive" } },
+          { text: "Doodle to ease my stress.", score: { coping: "creativity", mindset: "introspective" } },
+          { text: "Meditate for 5 minutes to refocus.", score: { coping: "calm", mindset: "proactive" } },
+          { text: "Step outside for fresh air.", score: { coping: "nature", mindset: "introspective" } }
+        ]
+      },
+      {
+        text: "Your manager criticizes your work harshly. What do you do?",
+        options: [
+          { text: "Go for a run to shake it off.", score: { coping: "action", mindset: "proactive" } },
+          { text: "Paint to express my emotions.", score: { coping: "creativity", mindset: "introspective" } },
+          { text: "Try a mindfulness exercise.", score: { coping: "calm", mindset: "proactive" } },
+          { text: "Visit a garden to reflect.", score: { coping: "nature", mindset: "introspective" } }
+        ]
+      },
+      {
+        text: "You’re overwhelmed by emails and tasks. What’s your go-to?",
+        options: [
+          { text: "A quick yoga session to re-energize.", score: { coping: "action", mindset: "proactive" } },
+          { text: "Cook a simple dish to distract myself.", score: { coping: "creativity", mindset: "introspective" } },
+          { text: "A short nap to reset.", score: { coping: "calm", mindset: "proactive" } },
+          { text: "A walk in a nearby park.", score: { coping: "nature", mindset: "introspective" } }
+        ]
+      },
+      {
+        text: "Your promotion is delayed despite hard work. How do you respond?",
+        options: [
+          { text: "Join a fitness class to lift my spirits.", score: { coping: "action", mindset: "proactive" } },
+          { text: "Start a new art project to stay positive.", score: { coping: "creativity", mindset: "introspective" } },
+          { text: "Listen to a relaxation podcast.", score: { coping: "calm", mindset: "proactive" } },
+          { text: "Hike a local trail for perspective.", score: { coping: "nature", mindset: "introspective" } }
+        ]
+      },
+      {
+        text: "A coworker gossips about you, causing tension. What’s your approach?",
+        options: [
+          { text: "Try kickboxing to let it go.", score: { coping: "action", mindset: "proactive" } },
+          { text: "Journal to process my thoughts.", score: { coping: "creativity", mindset: "introspective" } },
+          { text: "Do a guided relaxation session.", score: { coping: "calm", mindset: "proactive" } },
+          { text: "Walk in a forest to find calm.", score: { coping: "nature", mindset: "introspective" } }
+        ]
+      },
+      {
+        text: "You miss a key deadline due to unexpected issues. How do you handle it?",
+        options: [
+          { text: "Plan a cycling session to regroup.", score: { coping: "action", mindset: "proactive" } },
+          { text: "Write poetry to release stress.", score: { coping: "creativity", mindset: "introspective" } },
+          { text: "Meditate to regain balance.", score: { coping: "calm", mindset: "proactive" } },
+          { text: "Visit a local park to reflect.", score: { coping: "nature", mindset: "introspective" } }
+        ]
+      }
+    ];
+
+    const profileTypes = {
+      "action-proactive": {
+        name: "Dynamic Trailblazer",
+        description: "You thrive on physical activity and proactive solutions. Quick workouts and goal-driven tasks help you conquer stress.",
+        recommendations: ["Join a 10-minute office workout session.", "Try a local team sports club.", "Plan a weekly jogging routine."]
+      },
+      "action-introspective": {
+        name: "Active Reflector",
+        description: "You channel stress into movement and self-reflection. Solo physical activities help you process challenges.",
+        recommendations: ["Go for a solo run in a park.", "Try a 15-minute yoga session alone.", "Set personal fitness goals."]
+      },
+      "creativity-proactive": {
+        name: "Creative Visionary",
+        description: "You manage stress with structured creative outlets. Organized hobbies keep you focused and energized.",
+        recommendations: ["Join a cooking class in your area.", "Plan a weekly art workshop.", "Organize a creative project."]
+      },
+      "creativity-introspective": {
+        name: "Artistic Dreamer",
+        description: "You find peace in reflective creative expression. Solo hobbies help you unwind and recharge.",
+        recommendations: ["Write in a journal for 10 minutes daily.", "Sketch your thoughts in a notebook.", "Try a solo cooking challenge."]
+      },
+      "calm-proactive": {
+        name: "Steady Anchor",
+        description: "You tackle stress with structured mindfulness practices. Relaxation routines keep you centered.",
+        recommendations: ["Try a 5-minute meditation daily.", "Listen to a mindfulness podcast.", "Create a relaxation schedule."]
+      },
+      "calm-introspective": {
+        name: "Serenity Seeker",
+        description: "You process stress with calm, introspective practices. Quiet relaxation helps you find balance.",
+        recommendations: ["Try a 10-minute breathing exercise.", "Take a short nap to reset.", "Listen to soothing music before bed."]
+      },
+      "nature-proactive": {
+        name: "Nature Explorer",
+        description: "You manage stress with outdoor activities and a proactive approach. Planned nature outings keep you grounded.",
+        recommendations: ["Join a local hiking group.", "Plan a weekly park walk.", "Set outdoor adventure goals."]
+      },
+      "nature-introspective": {
+        name: "Tranquil Wanderer",
+        description: "You find solace in reflective outdoor time. Solo nature activities help you decompress.",
+        recommendations: ["Take a solo walk in a local park.", "Visit a garden for quiet reflection.", "Try gardening to unwind."]
+      }
+    };
+
+    let currentQuestion = 0;
+    let scores = {
+      coping: { action: 0, creativity: 0, calm: 0, nature: 0 },
+      mindset: { proactive: 0, introspective: 0 }
+    };
+
+    const startScreen = document.getElementById("start-screen");
+    const questionScreen = document.getElementById("question-screen");
+    const surveyScreen = document.getElementById("survey-screen");
+    const resultScreen = document.getElementById("result-screen");
+    const startBtn = document.getElementById("start-btn");
+    const questionText = document.getElementById("question-text");
+    const optionsDiv = document.getElementById("options");
+    const progressText = document.getElementById("progress-text");
+    const progressBar = document.getElementById("progress-bar");
+    const lifestyleForm = document.getElementById("lifestyle-form");
+    const surveySubmit = document.getElementById("survey-submit");
+    const profileType = document.getElementById("profile-type");
+    const profileDescription = document.getElementById("profile-description");
+    const recommendationsList = document.getElementById("recommendations");
+    const restartBtn = document.getElementById("restart-btn");
+
+    const soundEffect = new Audio("https://www.soundjay.com/buttons/sounds/button-09.mp3");
+
+    startBtn.addEventListener("click", startTest);
+    surveySubmit.addEventListener("click", submitSurvey);
+    restartBtn.addEventListener("click", resetTest);
+
+    function startTest() {
+      startScreen.classList.add("hidden");
+      questionScreen.classList.remove("hidden");
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      questionText.textContent = q.text;
+      optionsDiv.innerHTML = "";
+      q.options.forEach((option) => {
+        const btn = document.createElement("button");
+        btn.className = "w-full bg-white p-4 rounded-lg shadow hover:bg-blue-100 text-left transition transform hover:scale-105";
+        btn.textContent = option.text;
+        btn.addEventListener("click", () => selectOption(option.score));
+        optionsDiv.appendChild(btn);
+      });
+      progressText.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+      progressBar.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+    }
+
+    function selectOption(score) {
+      soundEffect.play();
+      scores.coping[score.coping]++;
+      scores.mindset[score.mindset]++;
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        questionScreen.classList.add("hidden");
+        surveyScreen.classList.remove("hidden");
+      }
+    }
+
+    function submitSurvey(e) {
+      e.preventDefault();
+      surveyScreen.classList.add("hidden");
+      resultScreen.classList.remove("hidden");
+      const topCoping = Object.keys(scores.coping).reduce((a, b) => scores.coping[a] > scores.coping[b] ? a : b);
+      const topMindset = Object.keys(scores.mindset).reduce((a, b) => scores.mindset[a] > scores.mindset[b] ? a : b);
+      const profileKey = `${topCoping}-${topMindset}`;
+      const profile = profileTypes[profileKey];
+      profileType.textContent = profile.name;
+      profileDescription.textContent = profile.description;
+      recommendationsList.innerHTML = "";
+      profile.recommendations.forEach(rec => {
+        const li = document.createElement("li");
+        li.textContent = rec;
+        recommendationsList.appendChild(li);
+      });
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    }
+
+    function resetTest() {
+      currentQuestion = 0;
+      scores = {
+        coping: { action: 0, creativity: 0, calm: 0, nature: 0 },
+        mindset: { proactive: 0, introspective: 0 }
+      };
+      resultScreen.classList.add("hidden");
+      startScreen.classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
