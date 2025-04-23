@@ -3,101 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stress Profile Quest</title>
+  <title>Stress Relief Journey</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
-<body class="bg-blue-50 font-sans">
-  <div class="container mx-auto p-4 max-w-lg">
-    <!-- Start Screen -->
-    <div id="start-screen" class="text-center">
-      <h1 class="text-3xl font-bold text-blue-700 mb-4">Stress Profile Quest</h1>
-      <p class="text-lg text-gray-600 mb-6">Take this 5–10 minute test to discover your Stress Profile Type and get personalized stress-relief recommendations.</p>
-      <button id="start-btn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Start Test</button>
-    </div>
-
-    <!-- Question Screen -->
-    <div id="question-screen" class="hidden">
-      <div class="w-full bg-blue-100 rounded-full h-4 mb-4">
-        <div id="progress-bar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
+<body class="bg-gradient-to-b from-blue-100 to-blue-300 font-sans">
+  <div class="flex items-center justify-center min-h-screen">
+    <div class="container mx-auto p-4 max-w-lg">
+      <!-- Start Screen -->
+      <div id="start-screen" class="text-center">
+        <h1 class="text-3xl font-bold text-blue-700 mb-4">Stress Relief Journey</h1>
+        <p class="text-lg text-black mb-6">Take this 5–10 minute test to discover your Stress Profile Type and get personalized stress-relief recommendations.</p>
+        <button id="start-btn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Start Test</button>
       </div>
-      <h2 id="question-text" class="text-2xl font-semibold text-blue-800 mb-4"></h2>
-      <div id="options" class="space-y-4"></div>
-      <p id="progress-text" class="text-sm text-gray-600 mt-4"></p>
-    </div>
 
-    <!-- Lifestyle Survey Screen -->
-    <div id="survey-screen" class="hidden">
-      <h2 class="text-2xl font-semibold text-blue-800 mb-4">Lifestyle & Habits</h2>
-      <p class="text-lg text-gray-600 mb-4">Help us tailor recommendations by answering these quick questions.</p>
-      <form id="lifestyle-form" class="space-y-4">
-        <div>
-          <label class="block text-gray-700">1. How many hours do you typically work per day?</label>
-          <select name="work-hours" class="w-full p-2 border rounded">
-            <option value="8-10">8–10 hours</option>
-            <option value="10-12">10–12 hours</option>
-            <option value="12+">12+ hours</option>
-          </select>
+      <!-- Question Screen -->
+      <div id="question-screen" class="hidden">
+        <div class="w-full bg-blue-100 rounded-full h-4 mb-4">
+          <div id="progress-bar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
         </div>
-        <div>
-          <label class="block text-gray-700">2. What is your primary mode of commuting?</label>
-          <select name="commute" class="w-full p-2 border rounded">
-            <option value="subway">Subway</option>
-            <option value="bus">Bus</option>
-            <option value="car">Car</option>
-            <option value="walking">Walking</option>
-            <option value="cycling">Cycling</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-gray-700">3. How often do you engage in physical activities?</label>
-          <select name="exercise" class="w-full p-2 border rounded">
-            <option value="daily">Daily</option>
-            <option value="2-3-times-week">2–3 times/week</option>
-            <option value="rarely">Rarely</option>
-            <option value="never">Never</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-gray-700">4. What hobbies or leisure activities do you enjoy?</label>
-          <input type="text" name="hobbies" class="w-full p-2 border rounded" placeholder="e.g., Cooking, Art, Reading, Gaming, None">
-        </div>
-        <div>
-          <label class="block text-gray-700">5. How much free time do you have on weekdays vs. weekends?</label>
-          <input type="text" name="free-time" class="w-full p-2 border rounded" placeholder="e.g., Weekdays: <1 hour, Weekends: 3–5 hours">
-        </div>
-        <div>
-          <label class="block text-gray-700">6. Where in Seoul (or nearby) do you live or work?</label>
-          <input type="text" name="location" class="w-full p-2 border rounded" placeholder="e.g., Gangnam, Hongdae, Yeouido">
-        </div>
-        <div>
-          <label class="block text-gray-700">7. What times are you typically available for offline events?</label>
-          <input type="text" name="availability" class="w-full p-2 border rounded" placeholder="e.g., Weekday evenings, Saturday mornings">
-        </div>
-        <div>
-          <label class="block text-gray-700">8. Do you prefer online activities, in-person events, or a mix?</label>
-          <select name="preference" class="w-full p-2 border rounded">
-            <option value="online">Online only</option>
-            <option value="in-person">In-person only</option>
-            <option value="both">Both</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-gray-700">9. Are there any barriers to participating in stress-relief activities?</label>
-          <input type="text" name="barriers" class="w-full p-2 border rounded" placeholder="e.g., Cost, Time, Location, Stigma">
-        </div>
-        <button type="submit" id="survey-submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Submit</button>
-      </form>
-    </div>
+        <h2 id="question-text" class="text-2xl font-semibold text-blue-800 mb-4"></h2>
+        <div id="options" class="space-y-4"></div>
+        <p id="progress-text" class="text-sm text-gray-600 mt-4"></p>
+      </div>
 
-    <!-- Result Screen -->
-    <div id="result-screen" class="hidden text-center">
-      <h2 class="text-2xl font-bold text-blue-700 mb-4">Your Stress Profile</h2>
-      <h3 id="profile-type" class="text-xl font-semibold text-blue-800 mb-4"></h3>
-      <p id="profile-description" class="text-lg text-gray-600 mb-6"></p>
-      <h4 class="text-lg font-semibold text-blue-800 mb-2">Personalized Recommendations</h4>
-      <ul id="recommendations" class="list-disc list-inside text-left text-gray-600 mb-6"></ul>
-      <button id="restart-btn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Take Test Again</button>
+      <!-- Lifestyle Survey Screen -->
+      <div id="survey-screen" class="hidden">
+        <h2 class="text-2xl font-semibold text-blue-800 mb-4">Lifestyle & Habits</h2>
+        <p class="text-lg text-black mb-4">Help us tailor recommendations by answering these quick questions.</p>
+        <form id="lifestyle-form" class="space-y-4">
+          <div>
+            <label class="block text-gray-700">1. How many hours do you typically work per day?</label>
+            <select name="work-hours" class="w-full p-2 border rounded">
+              <option value="8-10">8–10 hours</option>
+              <option value="10-12">10–12 hours</option>
+              <option value="12+">12+ hours</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700">2. What is your primary mode of commuting?</label>
+            <select name="commute" class="w-full p-2 border rounded">
+              <option value="subway">Subway</option>
+              <option value="bus">Bus</option>
+              <option value="car">Car</option>
+              <option value="walking">Walking</option>
+              <option value="cycling">Cycling</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700">3. How often do you engage in physical activities?</label>
+            <select name="exercise" class="w-full p-2 border rounded">
+              <option value="daily">Daily</option>
+              <option value="2-3-times-week">2–3 times/week</option>
+              <option value="rarely">Rarely</option>
+              <option value="never">Never</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700">4. What hobbies or leisure activities do you enjoy?</label>
+            <input type="text" name="hobbies" class="w-full p-2 border rounded" placeholder="e.g., Cooking, Art, Reading, Gaming, None">
+          </div>
+          <div>
+            <label class="block text-gray-700">5. How much free time do you have on weekdays vs. weekends?</label>
+            <input type="text" name="free-time" class="w-full p-2 border rounded" placeholder="e.g., Weekdays: <1 hour, Weekends: 3–5 hours">
+          </div>
+          <div>
+            <label class="block text-gray-700">6. Where in Seoul (or nearby) do you live or work?</label>
+            <input type="text" name="location" class="w-full p-2 border rounded" placeholder="e.g., Gangnam, Hongdae, Yeouido">
+          </div>
+          <div>
+            <label class="block text-gray-700">7. What times are you typically available for offline events?</label>
+            <input type="text" name="availability" class="w-full p-2 border rounded" placeholder="e.g., Weekday evenings, Saturday mornings">
+          </div>
+          <div>
+            <label class="block text-gray-700">8. Do you prefer online activities, in-person events, or a mix?</label>
+            <select name="preference" class="w-full p-2 border rounded">
+              <option value="online">Online only</option>
+              <option value="in-person">In-person only</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700">9. Are there any barriers to participating in stress-relief activities?</label>
+            <input type="text" name="barriers" class="w-full p-2 border rounded" placeholder="e.g., Cost, Time, Location, Stigma">
+          </div>
+          <button type="submit" id="survey-submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Submit</button>
+        </form>
+      </div>
+
+      <!-- Result Screen -->
+      <div id="result-screen" class="hidden text-center">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4">Your Stress Profile</h2>
+        <h3 id="profile-type" class="text-xl font-semibold text-blue-800 mb-4"></h3>
+        <p id="profile-description" class="text-lg text-black mb-6"></p>
+        <h4 class="text-lg font-semibold text-blue-800 mb-2">Personalized Recommendations</h4>
+        <ul id="recommendations" class="list-disc list-inside text-left text-black mb-6"></ul>
+        <button id="restart-btn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Take Test Again</button>
+      </div>
     </div>
   </div>
 
