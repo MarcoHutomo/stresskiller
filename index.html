@@ -7,21 +7,21 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
-<body class="bg-gradient-to-b from-blue-100 to-blue-300 font-sans">
+<body class="bg-gradient-to-b from-blue-100 to-blue-300 bg-opacity-90 font-sans">
   <div class="container mx-auto p-4 max-w-lg">
     <!-- Start Screen -->
     <div id="start-screen" class="flex min-h-screen items-center justify-center text-center">
       <div>
         <h1 class="text-3xl font-bold text-blue-700 mb-4">Stress Relief Journey</h1>
         <p class="text-lg text-black mb-6">Take this 5–10 minute test to discover your Stress Profile Type, stress level, and personalized stress-relief recommendations.</p>
-        <button id="start-btn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Start Test</button>
+        <button id="start-btn" onclick="startTest()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 cursor-pointer relative z-10">Start Test</button>
       </div>
     </div>
 
     <!-- Question Screen -->
     <div id="question-screen" class="hidden">
-      <div class="w-full bg-gradient-to-b from-blue-100 to-blue-300 rounded-full sm:h-3 h-4 mb-4 transition-all duration-300">
-        <div id="progress-bar" class="bg-gradient-to-b from-blue-100 to-blue-300 bg-opacity-75 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+      <div class="w-full bg-blue-100 rounded-full sm:h-3 h-4 mb-4 border border-blue-200 shadow-sm">
+        <div id="progress-bar" class="bg-blue-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
       </div>
       <h2 id="question-text" class="text-2xl font-semibold text-blue-800 mb-4"></h2>
       <div id="options" class="space-y-4"></div>
@@ -88,22 +88,22 @@
           <label class="block text-gray-700">9. Are there any barriers to participating in stress-relief activities?</label>
           <input type="text" name="barriers" class="w-full p-2 border rounded" placeholder="e.g., Cost, Time, Location, Stigma">
         </div>
-        <button type="submit" id="survey-submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Submit</button>
+        <button type="submit" id="survey-submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 cursor-pointer relative z-10">Submit</button>
       </form>
     </div>
 
     <!-- Result Screen -->
-    <div id="result-screen" class="hidden text-center">
+    <div id="result-screen" class="hidden text-center mt-6 min-h-[50vh]">
       <h2 class="text-2xl font-bold text-blue-700 mb-4">Your Stress Profile</h2>
       <h3 id="profile-type" class="text-xl font-semibold text-blue-800 mb-2"></h3>
       <p id="stress-level" class="text-lg font-medium text-blue-800 mb-4"></p>
       <p id="profile-description" class="text-lg text-black mb-6"></p>
       <h4 class="text-lg font-semibold text-blue-800 mb-2">Personalized Recommendations</h4>
       <ul id="recommendations" class="list-disc list-inside text-left text-black mb-6"></ul>
-      <a href="https://example.com/personalized-recommendations" target="_blank" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 mb-6">Join Our Platform for Tailored Recommendations</a>
+      <a href="https://www.mindcafe.org/" target="_blank" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 mb-6 cursor-pointer relative z-10">Join Our Platform for Tailored Recommendations</a>
       <h4 class="text-lg font-semibold text-blue-800 mb-4">Explore Other Stress Profile Types</h4>
-      <div id="other-types" class="space-y-6 p-6 max-h-[70vh] min-h-[200px] overflow-y-scroll scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-100 mt-6"></div>
-      <button id="restart-btn" class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Take Test Again</button>
+      <div id="other-types" class="space-y-6 p-6 max-h-[70vh] min-h-[200px] overflow-y-scroll scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-100 mt-4"></div>
+      <button id="restart-btn" class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 cursor-pointer relative z-10">Take Test Again</button>
     </div>
   </div>
 
@@ -273,6 +273,7 @@
     restartBtn.addEventListener("click", resetTest);
 
     function startTest() {
+      console.log("Start Test clicked");
       startScreen.classList.add("hidden");
       questionScreen.classList.remove("hidden");
       showQuestion();
@@ -284,7 +285,7 @@
       optionsDiv.innerHTML = "";
       q.options.forEach((option) => {
         const btn = document.createElement("button");
-        btn.className = "w-full bg-white p-4 rounded-lg shadow hover:bg-blue-100 text-left transition transform hover:scale-105";
+        btn.className = "w-full bg-white p-4 rounded-lg shadow hover:bg-blue-100 text-left transition transform hover:scale-105 cursor-pointer relative z-10";
         btn.textContent = option.text;
         btn.addEventListener("click", () => selectOption(option.score));
         optionsDiv.appendChild(btn);
